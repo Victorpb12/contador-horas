@@ -61,7 +61,7 @@ const NoteInputModal = ({visible, onClose, onSubmit}) => {
               size={15} 
               antIconName='check' 
               style={styles.submit}
-              onClick={handleSubmit}
+              onPress={handleSubmit}
             />
             { title.trim() || desc.trim() ? 
               <RoundIconBtn 
