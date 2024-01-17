@@ -16,7 +16,7 @@ import NoteInputModal from '../components/NoteInputModal'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Note from '../components/Note'
 
-const NoteScreen = () => {
+const NoteScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [notes, setNotes] = useState([]);
 
@@ -35,6 +35,10 @@ const NoteScreen = () => {
     setNotes(updatedNotes)
     await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
   };
+
+  const openNote = (note) => {
+    navigation.navigate('NoteDetail', { note })
+  }
 
   return (
     <>
@@ -58,7 +62,7 @@ const NoteScreen = () => {
             renderItem={({item}) => 
               <Note 
                 item={item}
-                onPress={() => {}}
+                onPress={() => openNote(item)}
               />}
           />
           {!notes.length ? 
@@ -113,7 +117,8 @@ const styles = StyleSheet.create({
     right: 15,
     bottom: 50,
     backgroundColor: '#6495ed',
-    opacity: 0.8
+    opacity: 0.8,
+    zIndex: 1,
   }
 })
 
