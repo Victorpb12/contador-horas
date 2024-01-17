@@ -55,7 +55,11 @@ const NoteScreen = () => {
             numColumns={2}
             columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 15}}
             keyExtractor={item => item.id.toString()} 
-            renderItem={({item}) => <Note item={item}/>}
+            renderItem={({item}) => 
+              <Note 
+                item={item}
+                onPress={() => {}}
+              />}
           />
           {!notes.length ? 
             <View 
