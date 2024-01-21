@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { 
   View, 
   Text, 
@@ -15,19 +15,11 @@ import RoundIconBtn from '../components/RoundIconBtn'
 import NoteInputModal from '../components/NoteInputModal'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Note from '../components/Note'
+import { useNotes } from '../contexts/NoteProvider'
 
 const NoteScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [notes, setNotes] = useState([]);
-
-  const findNotes = async () => {
-    const result = await AsyncStorage.getItem('notes');
-    if (result !== null) setNotes(JSON.parse(result));
-  };
-
-  useEffect(() => {
-    findNotes();
-  }, []);
+  const {notes, setNotes} = useNotes();
 
   const handleOnSubmit = async (title, desc) => {
     const note = {id: Date.now(), title: title, desc, time: Date.now()};
@@ -120,6 +112,6 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     zIndex: 1,
   }
-})
-
+});
+ 
 export default NoteScreen

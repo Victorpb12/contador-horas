@@ -1,8 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import colors from '../misc/colors';
 import RoundIconBtn from './RoundIconBtn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNotes } from '../contexts/NoteProvider';
+import NoteInputModal from './NoteInputModal';
 
 const formatDate = ms => {
   const date = new Date(ms);
@@ -20,10 +23,50 @@ const formatDate = ms => {
   return `${formattedDay}/${formattedMonth}/${year} - ${formattedHrs}h${formattedMin}`;
 };
 
-const NoteDetail = (props) => {
-  const {note} = props.route.params
-
+const NoteDetail = props => {
+  const [note, setNote] = useState(props.route.params.note);
   const headerHeight = useHeaderHeight();
+  const {setNotes} = useNotes();
+  const [showModal, setShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const deleteNote = async () => {
+    const result = await AsyncStorage.getItem('notes');
+    let notes = [];
+
+    if (result !== null) notes = JSON.parse(result);
+
+    const newNotes = notes.filter(n => n.id !== note.id);
+    setNotes(newNotes);
+    await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+    props.navigation.goBack();
+  };
+
+  const displayDeleteAlert = () => {
+    Alert.alert('Tem certeza?', 'Essa nota será deletada permanentemente!',
+    [
+      {
+        text: 'Deletar',
+        onPress: deleteNote
+      },
+      {
+        text: 'Não obrigado',
+        onPress: () => console.log('Não')
+      }
+    ],
+    {
+      cancelable: true,
+    }
+    )
+  };
+
+  const handleUpdate = () => {};
+  const handleOnClose = () => setShowModal(false);
+
+  const openEditModal = () => {
+    setIsEdit(true);
+    setShowModal(true);
+  }
 
   return (
     <>
@@ -35,16 +78,23 @@ const NoteDetail = (props) => {
       </ScrollView>
       <View style={styles.btnContainer}>
       <RoundIconBtn 
-        antIconName='edit' 
-        style={{backgroundColor: '#6495ed', marginBottom: 15}}
-        onPress={() => {console.log('edit')}}
-      />
-      <RoundIconBtn 
         antIconName='delete' 
         style={{backgroundColor: 'red'}}
-        onPress={() => {console.log('delete')}}
+        onPress={displayDeleteAlert}
+      />
+      <RoundIconBtn 
+        antIconName='edit' 
+        style={{backgroundColor: '#6495ed', marginTop: 15}}
+        onPress={openEditModal}
       />
       </View>
+      <NoteInputModal 
+        isEdit={isEdit}
+        note={note}
+        onClose={handleOnClose}
+        onSubmit={handleUpdate}
+        visible={showModal}
+      />
    </>
   );
 }
