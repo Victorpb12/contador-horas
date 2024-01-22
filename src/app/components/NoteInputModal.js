@@ -35,7 +35,7 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
     if (!title.trim() && !desc.trim()) return onClose();
 
     if (isEdit) {
-
+      onSubmit(title, desc, Date.now())
     } else {
       onSubmit(title, desc);
       setTitle('');
@@ -45,8 +45,10 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
   };
 
   const closeModal = () => {
-    setTitle('');
-    setDesc('');
+    if (!isEdit) {
+      setTitle('');
+      setDesc('');
+    }
     onClose();
   }
 

@@ -60,7 +60,26 @@ const NoteDetail = props => {
     )
   };
 
-  const handleUpdate = () => {};
+  const handleUpdate = async (title, desc, time) => {
+    const result = await AsyncStorage.getItem('notes');
+    let notes = [];
+    if (result !== null) notes = JSON.parse(result);
+
+    const newNotes = notes.filter(n => {
+      if (n.id === note.id) {
+        n.title = title;
+        n.desc = desc;
+        n.isUpdated = true;
+        n.time = time;
+
+        setNote(n);
+      }
+      return n;
+    })
+    setNotes(newNotes);
+    await AsyncStorage.setItem('notes', JSON.stringify(newNotes))
+  };
+
   const handleOnClose = () => setShowModal(false);
 
   const openEditModal = () => {
@@ -72,7 +91,11 @@ const NoteDetail = props => {
     <>
       <ScrollView 
         contentContainerStyle={[styles.container, {paddingTop: headerHeight}]}>
-        <Text style={styles.time}>{`Criado em ${formatDate(note.time)}`}</Text>
+        <Text style={styles.time}>{
+          note.isUpdated ? 
+            `Editado em ${formatDate(note.time)}` : 
+            `Criado em ${formatDate(note.time)}`}
+        </Text>
         <Text style={styles.title}>{note.title}</Text>
         <Text style={styles.desc}>{note.desc}</Text>
       </ScrollView>
