@@ -18,12 +18,24 @@ import Note from '../components/Note'
 import { useNotes } from '../contexts/NoteProvider'
 import NotFound from '../components/NotFound'
 
+const reverseData = data => {
+  return data.sort((a, b) => {
+    const aInt = parseInt(a.time);
+    const bInt = parseInt(b.time);
+    if (aInt < bInt) return 1;
+    if (aInt == bInt) return 0;
+    if (aInt > bInt) return -1;
+  })
+};
+
 const NoteScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [resultNotFound, setResultNotFound] = useState(false);
 
   const {notes, setNotes, findNotes} = useNotes();
+
+  const reverseNotes = reverseData(notes);
 
   const handleOnSubmit = async (title, desc) => {
     const note = {id: Date.now(), title: title, desc, time: Date.now()};
@@ -82,7 +94,7 @@ const NoteScreen = ({navigation}) => {
           : null } 
           {resultNotFound ? <NotFound /> :
           <FlatList
-            data={notes}
+            data={reverseNotes}
             numColumns={2}
             columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 15}}
             keyExtractor={item => item.id.toString()} 
