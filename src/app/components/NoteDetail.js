@@ -60,7 +60,7 @@ const NoteDetail = props => {
     )
   };
 
-  const handleUpdate = async (title, desc, time) => {
+  const handleUpdate = async (title, horaInicial, time) => {
     const result = await AsyncStorage.getItem('notes');
     let notes = [];
     if (result !== null) notes = JSON.parse(result);
@@ -68,7 +68,7 @@ const NoteDetail = props => {
     const newNotes = notes.filter(n => {
       if (n.id === note.id) {
         n.title = title;
-        n.desc = desc;
+        n.horaInicial = horaInicial;
         n.isUpdated = true;
         n.time = time;
 
@@ -97,7 +97,7 @@ const NoteDetail = props => {
             `Criado em ${formatDate(note.time)}`}
         </Text>
         <Text style={styles.title}>{note.title}</Text>
-        <Text style={styles.desc}>{note.desc}</Text>
+        <Text style={styles.horaInicial}>{note.horaInicial}</Text>
       </ScrollView>
       <View style={styles.btnContainer}>
       <RoundIconBtn 
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: 'bold',
   },
-  desc: {
+  horaInicial: {
     fontSize: 20,
     opacity: 0.6
   },

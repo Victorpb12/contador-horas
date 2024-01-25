@@ -10,36 +10,60 @@ import {
   Keyboard
 } from 'react-native';
 import RoundIconBtn from './RoundIconBtn';
+import moment from 'moment';
+import 'moment/locale/pt-br';
 
 const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
+  moment.locale('pt-br');
   const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
-
-  const handleModalClose = () => {
+  const [horaInicial, setHoraInicial] = useState('')
+  const [horaFinal, setHoraFinal] = useState('');
+  
+  const handleModalClose = () => { 
     Keyboard.dismiss();
   };
 
   useEffect(() => {
     if(isEdit) {
       setTitle(note.title)
-      setDesc(note.desc)
+      setHoraInicial(note.horaInicial)
     }
   }, [isEdit])
 
   const handleOnChangeText = (text, valueFor) => {
     if (valueFor === 'title') setTitle(text);
-    if (valueFor === 'description') setDesc(text);
+  };
+
+  const formatDate = (input, valueFor) => {
+    const numericInput = input.replace(/[^\d]/g, '');
+
+    if (valueFor === 'horaInicial') 
+    if (numericInput.length <= 5) {
+      setHoraInicial(
+        numericInput.length <= 2
+          ? numericInput
+          : `${numericInput.substring(0, 2)}:${numericInput.substring(2)}`)
+    };
+
+    if (valueFor === 'horaFinal') 
+    if (numericInput.length <= 5) {
+      setHoraFinal(
+        numericInput.length <= 2
+          ? numericInput
+          : `${numericInput.substring(0, 2)}:${numericInput.substring(2)}`)
+    };     
   };
 
   const handleSubmit = () => {
-    if (!title.trim() && !desc.trim()) return onClose();
+    if (!title.trim() && !horaInicial.trim()) return onClose();
 
     if (isEdit) {
-      onSubmit(title, desc, Date.now())
+      onSubmit(title, horaInicial, Date.now())
     } else {
-      onSubmit(title, desc);
+      onSubmit(title, horaInicial);
       setTitle('');
-      setDesc('');
+      setHoraInicial('');
+      setHoraFinal('');
     }
     onClose();
   };
@@ -47,7 +71,7 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
   const closeModal = () => {
     if (!isEdit) {
       setTitle('');
-      setDesc('');
+      setHoraInicial('');
     }
     onClose();
   }
@@ -58,18 +82,29 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
       <Modal visible={visible} animationType='fade'>
         <View style={styles.container}>
           <TextInput 
-          value={title}
+            value={title}
             placeholder='Título'
             style={[styles.input, styles.title]} 
             onChangeText={(text) => handleOnChangeText(text, 'title')}
           />
-          <TextInput 
-            value={desc}
-            multiline 
-            placeholder='Descrição' 
-            style={[styles.input, styles.description]} 
-            onChangeText={(text) => handleOnChangeText(text, 'description')}
-          />
+          <View style={styles.hourContainer}>
+            <TextInput 
+              value={horaInicial} 
+              placeholder='Hora inicial' 
+              style={[styles.input, styles.hora]} 
+              maxLength={5}
+              keyboardType='numeric'
+              onChangeText={(input) => formatDate(input, 'horaInicial')}
+            />
+            <TextInput 
+              value={horaFinal} 
+              placeholder='Hora final' 
+              style={[styles.input, styles.hora]} 
+              maxLength={5}
+              keyboardType='numeric'
+              onChangeText={(input) => formatDate(input, 'horaFinal')}
+            />
+          </View>
           <View style={styles.btnContainer}>
             <RoundIconBtn 
               size={15} 
@@ -77,7 +112,7 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
               style={styles.submit}
               onPress={handleSubmit}
             />
-            { title.trim() || desc.trim() ? 
+            { title.trim() || horaInicial.trim() ? 
               <RoundIconBtn 
                 size={15} 
                 antIconName='close' 
@@ -111,8 +146,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontWeight: 'bold',
   }, 
-  description: {
+  hourContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },  
+  hora: {
     height: 100,
+    textAlign: 'center'
   }, 
   modalBG: {
     flex: 1,

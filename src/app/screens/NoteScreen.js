@@ -18,6 +18,7 @@ import Note from '../components/Note'
 import { useNotes } from '../contexts/NoteProvider'
 import NotFound from '../components/NotFound'
 
+// Função para retornar os dados pelo último cadastrado
 const reverseData = data => {
   return data.sort((a, b) => {
     const aInt = parseInt(a.time);
@@ -37,8 +38,8 @@ const NoteScreen = ({navigation}) => {
 
   const reverseNotes = reverseData(notes);
 
-  const handleOnSubmit = async (title, desc) => {
-    const note = {id: Date.now(), title: title, desc, time: Date.now()};
+  const handleOnSubmit = async (title, horaInicial) => {
+    const note = {id: Date.now(), title: title, horaInicial, time: Date.now()};
     const updatedNotes = [...notes, note];
     setNotes(updatedNotes)
     await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  View,
   StyleSheet,
   Text,
   Dimensions,
@@ -8,13 +7,13 @@ import {
 } from 'react-native';
 
 const Note = ({ item, onPress }) => {
-  const { title, desc } = item;
+  const { title, horaInicial } = item;
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <Text style={styles.title} numberOfLines={2}>
         {title}
       </Text>
-      <Text numberOfLines={3}>{desc}</Text>
+      <Text numberOfLines={3}>{horaInicial}</Text>
     </TouchableOpacity>
   );
 };
