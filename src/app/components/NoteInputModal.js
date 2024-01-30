@@ -18,7 +18,7 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
   
   const handleModalClose = () => { 
     Keyboard.dismiss();
-  };
+  }; 
 
   useEffect(() => {
     if (isEdit) {
