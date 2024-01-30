@@ -38,8 +38,8 @@ const NoteScreen = ({navigation}) => {
 
   const reverseNotes = reverseData(notes);
 
-  const handleOnSubmit = async (title, horaInicial) => {
-    const note = {id: Date.now(), title: title, horaInicial, time: Date.now()};
+  const handleOnSubmit = async (title, horaInicial, horaFinal) => {
+    const note = {id: Date.now(), title: title, horaInicial, horaFinal,time: Date.now()};
     const updatedNotes = [...notes, note];
     setNotes(updatedNotes)
     await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
@@ -96,15 +96,15 @@ const NoteScreen = ({navigation}) => {
           {resultNotFound ? <NotFound /> :
           <FlatList
             data={reverseNotes}
-            numColumns={2}
-            columnWrapperStyle={{justifyContent: 'space-between', marginBottom: 15}}
+            numColumns={1}  
             keyExtractor={item => item.id.toString()} 
-            renderItem={({item}) => 
+            renderItem={({ item }) => (
               <Note 
                 item={item}
                 onPress={() => openNote(item)}
-              />}
-          /> }
+              />
+            )}
+          />}
           {!notes.length ? 
             <View 
               style={[StyleSheet.absoluteFillObject, styles.emptyHeaderContainer]}

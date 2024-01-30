@@ -10,11 +10,8 @@ import {
   Keyboard
 } from 'react-native';
 import RoundIconBtn from './RoundIconBtn';
-import moment from 'moment';
-import 'moment/locale/pt-br';
 
 const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
-  moment.locale('pt-br');
   const [title, setTitle] = useState('');
   const [horaInicial, setHoraInicial] = useState('')
   const [horaFinal, setHoraFinal] = useState('');
@@ -24,9 +21,10 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
   };
 
   useEffect(() => {
-    if(isEdit) {
+    if (isEdit) {
       setTitle(note.title)
       setHoraInicial(note.horaInicial)
+      setHoraFinal(note.horaFinal)
     }
   }, [isEdit])
 
@@ -58,9 +56,9 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
     if (!title.trim() && !horaInicial.trim()) return onClose();
 
     if (isEdit) {
-      onSubmit(title, horaInicial, Date.now())
+      onSubmit(title, horaInicial, horaFinal, Date.now())
     } else {
-      onSubmit(title, horaInicial);
+      onSubmit(title, horaInicial, horaFinal);
       setTitle('');
       setHoraInicial('');
       setHoraFinal('');

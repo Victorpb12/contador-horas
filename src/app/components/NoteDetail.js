@@ -60,7 +60,7 @@ const NoteDetail = props => {
     )
   };
 
-  const handleUpdate = async (title, horaInicial, time) => {
+  const handleUpdate = async (title, horaInicial, horaFinal,time) => {
     const result = await AsyncStorage.getItem('notes');
     let notes = [];
     if (result !== null) notes = JSON.parse(result);
@@ -69,6 +69,7 @@ const NoteDetail = props => {
       if (n.id === note.id) {
         n.title = title;
         n.horaInicial = horaInicial;
+        n.horaFinal = horaFinal;
         n.isUpdated = true;
         n.time = time;
 
@@ -97,7 +98,8 @@ const NoteDetail = props => {
             `Criado em ${formatDate(note.time)}`}
         </Text>
         <Text style={styles.title}>{note.title}</Text>
-        <Text style={styles.horaInicial}>{note.horaInicial}</Text>
+        <Text style={styles.hora}>{note.horaInicial} - {note.horaFinal}</Text>
+        <Text style={styles.hora}>{note.horaInicial + note.horaFinal}</Text>
       </ScrollView>
       <View style={styles.btnContainer}>
       <RoundIconBtn 
@@ -129,17 +131,22 @@ const styles = StyleSheet.create({
   }, 
   time: {
     textAlign: 'right',
-    fontSize: 12,
+    fontSize: 14,
     opacity: 0.6,
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 30,
     color: colors.primary,
     fontWeight: 'bold',
   },
-  horaInicial: {
-    fontSize: 20,
-    opacity: 0.6
+  hora: {
+    fontSize: 30,
+    opacity: 0.6,
+    alignContent: 'center',
+    textAlign: 'center',
+    fontWeight: 'bold', 
+    marginTop: 10,
   },
   btnContainer: {
     position: 'absolute',
