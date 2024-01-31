@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 const Note = ({ item, onPress }) => {
-  const { title, horaInicial, horaFinal } = item;
+  const { title, horaInicial, horaFinal, difference } = item;
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <Text style={styles.title} numberOfLines={2}>
@@ -16,7 +16,9 @@ const Note = ({ item, onPress }) => {
       <Text 
         style={styles.horas} 
         numberOfLines={3}>
-        {horaInicial} - {horaFinal}
+        {horaInicial ? 'Início: ' + horaInicial : null} 
+        {horaFinal ? ' - Fim: ' + horaFinal : null}
+        {difference ? ' | Total: ' + difference : null}
       </Text>
     </TouchableOpacity>
   );
@@ -41,6 +43,8 @@ const styles = StyleSheet.create({
   horas: {
     fontSize: 16, 
     fontWeight: 'bold',
+    textAlign: 'center',
+    alignContent: 'center',
   }
 });
 

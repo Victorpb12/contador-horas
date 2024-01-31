@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard
 } from 'react-native';
+
 import RoundIconBtn from './RoundIconBtn';
 
 const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
@@ -110,7 +111,7 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
               style={styles.submit}
               onPress={handleSubmit}
             />
-            { title.trim() || horaInicial.trim() ? 
+            { title.trim() || horaInicial.trim() || horaFinal.trim() ? 
               <RoundIconBtn 
                 size={15} 
                 antIconName='close' 

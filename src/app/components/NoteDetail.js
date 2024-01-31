@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { useNotes } from '../contexts/NoteProvider';
+import { format, parse, differenceInMinutes } from 'date-fns';
+
 import colors from '../misc/colors';
 import RoundIconBtn from './RoundIconBtn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNotes } from '../contexts/NoteProvider';
 import NoteInputModal from './NoteInputModal';
 
 const formatDate = ms => {
@@ -59,9 +61,24 @@ const NoteDetail = props => {
     }
     )
   };
+  
+  const differenceHours = (horaInicial, horaFinal) => {
+    const formatHour = 'HH:mm';
+    const dataBase = new Date();
 
-  const handleUpdate = async (title, horaInicial, horaFinal,time) => {
+    const dataInicial = parse(horaInicial, formatHour, dataBase);
+    const dataFinal = parse(horaFinal, formatHour, dataBase);
+
+    const difference = differenceInMinutes(dataFinal, dataInicial);
+
+    const formatDifference = format(new Date(0, 0, 0, 0, difference), formatHour);
+
+    return formatDifference;
+  }
+
+  const handleUpdate = async (title, horaInicial, horaFinal, time) => {
     const result = await AsyncStorage.getItem('notes');
+    const difference  = differenceHours(horaInicial, horaFinal);
     let notes = [];
     if (result !== null) notes = JSON.parse(result);
 
@@ -72,6 +89,7 @@ const NoteDetail = props => {
         n.horaFinal = horaFinal;
         n.isUpdated = true;
         n.time = time;
+        n.difference = difference;
 
         setNote(n);
       }
@@ -99,7 +117,7 @@ const NoteDetail = props => {
         </Text>
         <Text style={styles.title}>{note.title}</Text>
         <Text style={styles.hora}>{note.horaInicial} - {note.horaFinal}</Text>
-        <Text style={styles.hora}>{note.horaInicial + note.horaFinal}</Text>
+        <Text style={styles.hora}>{note.difference}</Text>
       </ScrollView>
       <View style={styles.btnContainer}>
       <RoundIconBtn 
