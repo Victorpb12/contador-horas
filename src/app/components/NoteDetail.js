@@ -65,16 +65,25 @@ const NoteDetail = props => {
   const differenceHours = (horaInicial, horaFinal) => {
     const formatHour = 'HH:mm';
     const dataBase = new Date();
-
+  
+    if (!horaInicial || !horaFinal) {
+      return null; 
+    }
+  
     const dataInicial = parse(horaInicial, formatHour, dataBase);
     const dataFinal = parse(horaFinal, formatHour, dataBase);
-
+  
+    if (isNaN(dataInicial) || isNaN(dataFinal)) {
+      return null; 
+    }
+  
     const difference = differenceInMinutes(dataFinal, dataInicial);
-
+  
     const formatDifference = format(new Date(0, 0, 0, 0, difference), formatHour);
-
+  
     return formatDifference;
   }
+  
 
   const handleUpdate = async (title, horaInicial, horaFinal, time) => {
     const result = await AsyncStorage.getItem('notes');
@@ -116,7 +125,8 @@ const NoteDetail = props => {
             `Criado em ${formatDate(note.time)}`}
         </Text>
         <Text style={styles.title}>{note.title}</Text>
-        <Text style={styles.hora}>{note.horaInicial} - {note.horaFinal}</Text>
+        <Text style={styles.hora}>
+          {note.horaInicial ? note.horaInicial + ' -' : null} {note.horaFinal}</Text>
         <Text style={styles.hora}>{note.difference}</Text>
       </ScrollView>
       <View style={styles.btnContainer}>
