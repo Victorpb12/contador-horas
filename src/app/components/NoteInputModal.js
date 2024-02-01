@@ -54,7 +54,7 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
   };
 
   const handleSubmit = () => {
-    if (!title.trim() && !horaInicial.trim()) return onClose();
+    if (!title.trim() && !horaInicial.trim() && !horaFinal.trim()) return onClose();
 
     if (isEdit) {
       onSubmit(title, horaInicial, horaFinal, Date.now())
@@ -71,6 +71,7 @@ const NoteInputModal = ({visible, onClose, onSubmit, note, isEdit}) => {
     if (!isEdit) {
       setTitle('');
       setHoraInicial('');
+      setHoraFinal('');
     }
     onClose();
   }

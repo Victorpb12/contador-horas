@@ -7,7 +7,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   FlatList,
-} from 'react-native'
+} from 'react-native';
+import { format, parse, differenceInMinutes } from 'date-fns';
 
 import color from '../misc/colors'
 import SearchBar from '../components/SearchBar'
@@ -38,12 +39,51 @@ const NoteScreen = ({navigation}) => {
 
   const reverseNotes = reverseData(notes);
 
+  const differenceHours = (horaInicial, horaFinal) => {
+    const formatHour = 'HH:mm';
+    const dataBase = new Date();
+  
+    if (!horaInicial || !horaFinal) {
+      return ''; // Tratar caso as horas sejam inválidas
+    }
+  
+    const dataInicial = parse(horaInicial, formatHour, dataBase);
+    const dataFinal = parse(horaFinal, formatHour, dataBase);
+  
+    if (isNaN(dataInicial) || isNaN(dataFinal)) {
+      return ''; // Tratar caso o parse das horas falhe
+    }
+  
+    const difference = differenceInMinutes(dataFinal, dataInicial);
+    const formatDifference = format(new Date(0, 0, 0, 0, difference), formatHour);
+  
+    return formatDifference;
+  };
+  
   const handleOnSubmit = async (title, horaInicial, horaFinal) => {
-    const note = {id: Date.now(), title: title, horaInicial, horaFinal,time: Date.now()};
+    const difference = differenceHours(horaInicial, horaFinal);
+  
+    const note = {
+      id: Date.now(),
+      title,
+      horaInicial,
+      horaFinal,
+      difference,
+      time: Date.now(),
+    };
+  
+    const result = await AsyncStorage.getItem('notes');
+    let notes = [];
+  
+    if (result !== null) {
+      notes = JSON.parse(result);
+    }
+  
     const updatedNotes = [...notes, note];
-    setNotes(updatedNotes)
+    setNotes(updatedNotes);
     await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
   };
+  
 
   const openNote = (note) => {
     navigation.navigate('NoteDetail', { note })
